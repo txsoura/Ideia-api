@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:7.4.1-apache
 
 # Copy composer.lock and composer.json
 COPY composer.lock composer.json /var/www/api/
@@ -9,7 +9,6 @@ COPY .env /var/www/api/
 # Set working directory
 WORKDIR /var/www/api
 
-# Install dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     zlib1g-dev \
@@ -17,19 +16,18 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     build-essential \
     libonig-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
+    libpq-dev \
     zip \
-    libzip-dev \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
+    curl \
     unzip \
-    git \
-    curl
+    && docker-php-ext-configure gd \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install pdo_pgsql \
+    && docker-php-ext-install mysqli \
+    && docker-php-ext-install zip \
+    && docker-php-source delete
 
-# Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY vhost.conf /etc/apache2/sites-available/000-default.conf
 
 # Install extensions
 RUN docker-php-ext-install pdo_pgsql mbstring zip exif pcntl
