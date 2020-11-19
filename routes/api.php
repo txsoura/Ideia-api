@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +13,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+# Version
+Route::get('/v1', function () {
+    return [
+        'name' => config('app.name'),
+        'version' => config('app.version'),
+        'locale' => app()->getLocale(),
+    ];
+});
+
+// 404 route
+Route::fallback(function () {
+    return response()->json(['message' => 'Page Not Found'], 404);
+});
+
+// Auth routes
+Route::group(['prefix' => 'v1/auth', 'middleware' => 'api'], function () {
+    Route::post('refresh', 'Auth\AuthController@refresh');
+    Route::get('me', 'Auth\AuthController@me');
+    Auth::routes();
 });
