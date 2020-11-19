@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -50,6 +52,44 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof ModelNotFoundException && $request->wantsJson()) {
+
+            return response()->json([
+                'message' => "Entry not found",
+                strtolower(str_replace('App\\Models\\', '',  $exception->getModel())) . 's' => [
+                    str_replace('App\\Models\\', '', $exception->getModel()) . ' not found'
+                ]
+            ], 404);
+        }
+
+        if ($exception instanceof UnauthorizedHttpException) {
+            $preException = $exception->getPrevious();
+            if ($preException instanceof
+                \Tymon\JWTAuth\Exceptions\TokenExpiredException
+            ) {
+                return response()->json([
+                    'error' => 'Token expired'
+                ], 401);
+            } else if ($preException instanceof
+                \Tymon\JWTAuth\Exceptions\TokenInvalidException
+            ) {
+                return response()->json([
+                    'error' => 'Token invalid'
+                ], 401);
+            } else if ($preException instanceof
+                \Tymon\JWTAuth\Exceptions\TokenBlacklistedException
+            ) {
+                return response()->json([
+                    'error' => 'Token blacklisted'
+                ], 401);
+            }
+            if ($exception->getMessage() === 'Token not provided') {
+                return response()->json([
+                    'error' => 'Token not provided'
+                ], 401);
+            }
+        }
+
         return parent::render($request, $exception);
     }
 }
