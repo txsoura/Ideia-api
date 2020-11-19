@@ -24,6 +24,7 @@ class CreateAddressesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('code');
+            $table->foreignId('country_id')->references('id')->on('countries');
             $table->timestamps();
         });
 
@@ -32,6 +33,7 @@ class CreateAddressesTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('code');
+            $table->foreignId('state_id')->references('id')->on('states');
             $table->timestamps();
         });
 
