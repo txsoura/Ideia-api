@@ -21,7 +21,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'status', 'role'
+         'email', 'password', 'status', 'role'
     ];
 
     protected $dates = ['created_at', 'deleted_at'];
@@ -67,13 +67,23 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
-    public function account()
+    public function profile()
     {
-        return $this->hasMany(Account::class,'user_id','id');
+        return $this->hasOne(Profile::class);
     }
 
     public function wallet()
     {
-        return $this->hasMany(Wallet::class,'user_id','id');
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function address()
+    {
+        return $this->hasOne(Address::class);
+    }
+
+    public function events()
+    {
+        return $this->hasMany(Event::class);
     }
 }
