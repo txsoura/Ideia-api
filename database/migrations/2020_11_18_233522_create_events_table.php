@@ -31,7 +31,7 @@ class CreateEventsTable extends Migration
             $table->integer('ticket')->default(0);
             $table->enum('status', EventStatus::toArray())->default( EventStatus::PENDENT);
             $table->foreignId('owner_id')->references('id')->on('users');
-            $table->foreignId('address_id')->references('id')->on('addresses')->nullable();
+            $table->foreignId('address_id')->nullable()->constrained('addresses');
             $table->timestamps();
             $table->softDeletes();
         });
