@@ -22,7 +22,7 @@ class CreateProfilesTable extends Migration
             $table->bigInteger('cellphone')->nullable();
             $table->enum('sex', UserSex::toArray())->nullable();
             $table->foreignId('user_id')->references('id')->on('users');
-            $table->foreignId('address_id')->references('id')->on('addresses')->nullable();
+            $table->foreignId('address_id')->nullable()->constrained('addresses');
             $table->timestamps();
             $table->softDeletes();
         });

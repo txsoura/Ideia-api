@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
+use App\Enums\UserStatus;
 use App\Http\Controllers\Controller;
+use App\Models\Profile;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -31,7 +38,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest', ['except' => ['logout', 'me', 'refresh', 'respondWithToken']]);
     }
 
 
@@ -138,15 +145,11 @@ class LoginController extends Controller
      * @param  mixed  $user
      * @return mixed
      */
-    protected function authenticated(Request $request, $user)
+    protected function authenticated(Request $request)
     {
         if ($token = auth()->attempt($this->credentials($request, $request['status'] = 'approved'))) {
 
-            return response()->json([
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => auth()->factory()->getTTL() * 60
-            ], 200);
+            return $this->respondWithToken($token);
         }
 
         if (auth()->attempt($this->credentials($request, $request['status'] = 'pendent'))) {
@@ -239,5 +242,69 @@ class LoginController extends Controller
     protected function guard()
     {
         return Auth::guard();
+    }
+
+    public function me()
+    {
+        return response()->json(auth()->user());
+    }
+
+    public function refresh()
+    {
+        return $this->respondWithToken(auth()->refresh());
+    }
+
+    private function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
+    }
+
+    public function redirectToProvider($provider)
+    {
+        return Socialite::driver($provider)->redirect();
+    }
+
+    public function handleProviderCallback($provider)
+    {
+        $user = Socialite::driver($provider)->user();
+
+        $validUser=User::where('email',$user->email)->first();
+        if(!$validUser){
+            $validUser=User::create([
+                'email' => $user->email,
+                'email_verified_at' => now(),
+                'password' => Hash::make(Str::random(18)),
+                'api_token' => Str::random(60),
+                'role' => UserRole::CUSTOMER,
+                'status' => UserStatus::APPROVED
+                ]);
+
+                Profile::create([
+                    'user_id' => $validUser->id,
+                    'name' => $user->name
+
+            ]);
+        }
+
+        if ($validUser->status!= UserStatus::APPROVED) {
+
+            return response()->json([
+                'message' => "You have no access to the system, please contact the support.",
+                'errors' => [
+                    "users" => [
+                        "Your user is pendent or blocked."
+                    ]
+                ]
+            ], 422);
+        }
+
+        if ($token = auth()->login($validUser,true)) {
+
+            return $this->respondWithToken($token);
+        }
     }
 }
