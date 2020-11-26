@@ -29,12 +29,15 @@ Route::fallback(function () {
 
 // Auth routes
 Route::group(['prefix' => 'v1/auth', 'middleware' => 'api'], function () {
-    Route::post('refresh', 'Auth\AuthController@refresh');
-    Route::get('me', 'Auth\AuthController@me');
-    Auth::routes();
+    Route::post('login', 'Auth\LoginController@login');
+    Route::post('register', 'Auth\RegisterController@register');
+    Route::post('logout', 'Auth\LoginController@logout')->middleware('jwt.auth');
+    Route::post('refresh', 'Auth\LoginController@refresh')->middleware('jwt.auth');
+    Route::get('me', 'Auth\LoginController@me')->middleware('jwt.auth');
+    Auth::routes(['verify' => true]);
 });
 
-Route::group(['prefix' => 'v1', 'middleware' => ['api','jwt.auth']], function () {
+Route::group(['prefix' => 'v1', 'middleware' => ['api', 'jwt.auth']], function () {
     Route::apiResource('users', 'UserController');
     Route::apiResource('users/{user}/profile', 'ProfileController');
     Route::post('users/{user}/profile/upload', 'ProfileController@upload');
