@@ -53,13 +53,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($exception instanceof ModelNotFoundException && $request->wantsJson()) {
-
-            return response()->json([
-                'message' => "Entry not found",
-                strtolower(str_replace('App\\Models\\', '',  $exception->getModel())) . 's' => [
-                    str_replace('App\\Models\\', '', $exception->getModel()) . ' not found'
-                ]
-            ], 404);
+            return response()->json(['error' => 'Entry for ' . str_replace('App\\Models\\', '', $exception->getModel()) . ' not found'], 404);
         }
 
         if ($exception instanceof UnauthorizedHttpException) {
@@ -82,12 +76,23 @@ class Handler extends ExceptionHandler
                 return response()->json([
                     'error' => 'Token blacklisted'
                 ], 401);
+            } else if ($preException instanceof
+                \Tymon\JWTAuth\Exceptions\JWTException
+            ) {
+                return response()->json(['error' => 'Token cannot be parsed'], 401);
             }
+
             if ($exception->getMessage() === 'Token not provided') {
                 return response()->json([
                     'error' => 'Token not provided'
                 ], 401);
             }
+        }
+
+        if ($exception instanceof
+            \Tymon\JWTAuth\Exceptions\JWTException
+        ) {
+            return response()->json(['error' => 'Already logged out!'], 422);
         }
 
         return parent::render($request, $exception);
