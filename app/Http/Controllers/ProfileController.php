@@ -9,14 +9,14 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
-class CurrencyController extends Controller
+class ProfileController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index( Request $request,User $user)
+    public function index(Request $request, User $user)
     {
         if ($request['include']) {
             return new ProfileResource(Profile::where('user_id', $user->id)->with(explode(',', $request['include']))->first(), 200);
@@ -34,9 +34,9 @@ class CurrencyController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        $profile = Profile::where('user_id', $user->id)->first();
 
-        $profile= Profile::where('user_id', $user->id)->first();
-
+        if ($profile) {
             $request->validate([
                 'name' => 'required|string',
                 'cpf_cnpj' => 'cpf_cnpj|unique:users',
@@ -48,7 +48,24 @@ class CurrencyController extends Controller
             $profile->update($request->all());
 
             return new ProfileResource($profile, 202);
+        }
+        return response()->json(['error' => 'Entry for Profile not found'], 404);
+    }
 
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Profile  $profile
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(User $user)
+    {
+        $profile = Profile::where('user_id', $user->id)->first();
+        if ($profile) {
+            $profile->delete();
+            return response()->json(['message' => 'Deleted successfully'], 204);
+        }
+        return response()->json(['error' => 'Entry for Profile not found'], 404);
     }
 
     /**
@@ -57,16 +74,16 @@ class CurrencyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function upload(User $user, Request $request)
+    public function upload(Request $request, User $user)
     {
-        $profile = Profile::where('user_id',$user->id)->first();
+        $profile = Profile::where('user_id', $user->id)->first();
 
         $disk = \Storage::disk('local');
         $request->validate([
             'img' => 'required|image|max:2000',
         ]);
 
-        if($profile->img){
+        if ($profile->img) {
             \Storage::disk('local')->delete($profile->img);
         }
 
