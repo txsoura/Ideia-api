@@ -38,9 +38,15 @@ Route::group(['prefix' => 'v1/auth', 'middleware' => 'api'], function () {
 });
 
 Route::group(['prefix' => 'v1', 'middleware' => ['api', 'jwt.auth']], function () {
+    // User
     Route::apiResource('users', 'UserController');
+    Route::put('users/{user}/approve', 'UserController@approve');
+    Route::put('users/{user}/block', 'UserController@block');
+    // User Profile
     Route::apiResource('users/{user}/profile', 'ProfileController');
     Route::post('users/{user}/profile/upload', 'ProfileController@upload');
+
+    //User Wallet
     Route::apiResource('users/{user}/wallets', 'WalletController');
     Route::put('users/{user}/wallets/{wallet}/in', 'WalletController@in');
     Route::put('users/{user}/wallets/{wallet}/out', 'WalletController@out');
