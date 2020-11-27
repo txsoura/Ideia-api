@@ -9,16 +9,6 @@ use Illuminate\Http\Request;
 class CountryController extends Controller
 {
     /**
-     * Create a new CountryController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('jwt.auth', ['except' => ['index', 'show']]);
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

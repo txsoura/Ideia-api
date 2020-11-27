@@ -8,16 +8,6 @@ use Illuminate\Http\Request;
 
 class CityController extends Controller
 {
-     /**
-     * Create a new CityController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('jwt.auth', ['except' => ['index', 'show']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -56,14 +46,13 @@ class CityController extends Controller
      * @param  \App\Models\City  $city
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request,City $city)
+    public function show(Request $request, City $city)
     {
         if ($request['include']) {
-            return CityResource::collection(City::where('id',$city->id)->with(explode(',', $request['include']))->get(),200);
+            return CityResource::collection(City::where('id', $city->id)->with(explode(',', $request['include']))->get(), 200);
         } else {
             return new CityResource($city, 200);
         }
-        return new CityResource($city, 200);
     }
 
     /**

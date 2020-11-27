@@ -9,16 +9,6 @@ use Illuminate\Http\Request;
 class StateController extends Controller
 {
     /**
-     * Create a new StateController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('jwt.auth', ['except' => ['index', 'show']]);
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -56,10 +46,10 @@ class StateController extends Controller
      * @param  \App\Models\State  $state
      * @return \Illuminate\Http\Response
      */
-    public function show( Request $request, State $state)
+    public function show(Request $request, State $state)
     {
         if ($request['include']) {
-            return StateResource::collection(State::where('id',$state->id)->with(explode(',', $request['include']))->get(),200);
+            return StateResource::collection(State::where('id', $state->id)->with(explode(',', $request['include']))->get(), 200);
         } else {
             return new StateResource($state, 200);
         }
