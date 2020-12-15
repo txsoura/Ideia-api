@@ -24,14 +24,15 @@ class CreateEventsTable extends Migration
             $table->string('tags')->nullable();
             $table->dateTime('start');
             $table->enum('access', EventAccess::toArray())->default(EventAccess::FREE);
-            $table->decimal('price',10,2)->default(0.00);
+            $table->decimal('price', 10, 2)->default(0.00);
             $table->enum('type', EventType::toArray())->default(EventType::PUBLIC);
             $table->enum('restriction', EventRestriction::toArray())->default(EventRestriction::NONE);
             $table->dateTime('available')->default(now());
-            $table->enum('status', EventStatus::toArray())->default( EventStatus::PENDENT);
+            $table->enum('status', EventStatus::toArray())->default(EventStatus::PENDENT);
             $table->integer('ticket')->default(0);
             $table->foreignId('producer_id')->references('id')->on('users');
             $table->foreignId('address_id')->nullable()->constrained('addresses');
+            $table->json('img');
             $table->timestamps();
             $table->softDeletes();
         });
