@@ -6,12 +6,8 @@ use App\Enums\EventAccess;
 use App\Enums\EventRestriction;
 use App\Enums\EventStatus;
 use App\Enums\EventType;
-use App\Enums\UserRole;
-use App\Enums\UserStatus;
 use App\Models\Event;
-use App\Models\User;
 use Faker\Generator as Faker;
-use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
