@@ -21,12 +21,9 @@ class Ticket extends Model
     protected $dates = ['created_at', 'deleted_at'];
 
     protected $fillable = [
-        'price',   'user_id', 'event_id'  ];
+        'price',   'customer_id', 'event_id'
+    ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function event()
     {

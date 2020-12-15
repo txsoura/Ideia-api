@@ -18,13 +18,14 @@ class Tag extends Model
      *
      * @var string
      */
-    protected $dates = ['created_at'];
+    protected $dates = ['created_at', 'deleted_at'];
 
     protected $fillable = [
-        'name' ];
+        'name'
+    ];
 
-    public function event()
+    public function events()
     {
-        return $this->belongsTo(Event::class);
+        return  $this->hasMany(Event::class);
     }
 }

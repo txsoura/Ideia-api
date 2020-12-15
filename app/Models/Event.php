@@ -18,15 +18,11 @@ class Event extends Model
      *
      * @var string
      */
-    protected $dates = ['created_at', 'deleted_at','start','available'];
+    protected $dates = ['created_at', 'deleted_at', 'start', 'available'];
 
     protected $fillable = [
-        'name','description','tags','start','access','price','type','restriction','available','ticket','owner_id', 'address_id'  ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
+        'name', 'description', 'tags', 'start', 'access', 'price', 'type', 'restriction', 'available', 'ticket', 'producer_id', 'address_id', 'imgs'
+    ];
 
     public function tags()
     {
@@ -36,10 +32,5 @@ class Event extends Model
     public function tickets()
     {
         return $this->hasMany(Ticket::class);
-    }
-
-    public function address()
-    {
-        return $this->hasOne(Address::class);
     }
 }
