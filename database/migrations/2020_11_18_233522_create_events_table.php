@@ -28,9 +28,9 @@ class CreateEventsTable extends Migration
             $table->enum('type', EventType::toArray())->default(EventType::PUBLIC);
             $table->enum('restriction', EventRestriction::toArray())->default(EventRestriction::NONE);
             $table->dateTime('available')->default(now());
-            $table->integer('ticket')->default(0);
             $table->enum('status', EventStatus::toArray())->default( EventStatus::PENDENT);
-            $table->foreignId('owner_id')->references('id')->on('users');
+            $table->integer('ticket')->default(0);
+            $table->foreignId('producer_id')->references('id')->on('users');
             $table->foreignId('address_id')->nullable()->constrained('addresses');
             $table->timestamps();
             $table->softDeletes();

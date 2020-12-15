@@ -16,10 +16,10 @@ class CreateTicketsTable extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->decimal('price', 10, 2)->default(0.00);
             $table->enum('status', TicketStatus::toArray())->default(TicketStatus::PENDENT);
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->decimal('price', 10, 2)->default(0.00);
             $table->foreignId('event_id')->references('id')->on('events');
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
             $table->softDeletes();
         });
