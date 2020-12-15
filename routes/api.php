@@ -33,13 +33,14 @@ Route::group(['prefix' => 'v1'], function () {
 });
 
 //private routes
-Route::group(['prefix' => 'v1', 'middleware' => ['jwt.auth']], function () {
-    Route::apiResource('events', 'EventController', [
-        'except' => [
-            'index',
-            'show'
-        ]
-    ])->middleware('jwt.auth');
+Route::group(['prefix' => 'v1'], function () {
+    // Route::group(['prefix' => 'v1', 'middleware' => ['jwt.auth']], function () {
+    // Route::apiResource('events', 'EventController', [
+    //     'except' => [
+    //         'index',
+    //         'show'
+    //     ]
+    // ])->middleware('jwt.auth');
     Route::apiResource('tickets', 'TicketController');
     Route::apiResource('tags', 'TagController');
 });
