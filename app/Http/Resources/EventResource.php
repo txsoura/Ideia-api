@@ -20,27 +20,28 @@ class EventResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'tags_id' => $this->tags_id,
-            'start' => $this->start,
-            'price' => $this->price,
+            'tags' =>  TagResource::collection($this->whenLoaded('tags')),
+            'start' => $this->dateformat($this->start),
             'access' => $this->access,
+            'price' => $this->price,
             'type' => $this->type,
             'restriction' => $this->restriction,
             'available' => $this->available,
+            'status' => $this->status,
             'ticket' => $this->ticket,
-            'owner_id' => $this->owner_id,
-            'address_id' => $this->address_id,
-            'owner' =>  new UserResource($this->whenLoaded('user')),
-            'tags' =>  TagResource::collection($this->whenLoaded('tags')),
             'tickets' =>  TicketResource::collection($this->whenLoaded('tickets')),
-            'address' => new AddressResource($this->whenLoaded('address')),
+            'producer_id' => $this->producer_id,
+            'address_id' => $this->address_id,
+            'imgs' => $this->imgs,
             'created_at' => $this->dateformat($this->created_at),
             'updated_at' => $this->dateformat($this->updated_at),
             'deleted_at' => $this->dateformat($this->deleted_at)
         ];
     }
 
-    public function dateformat ($date){
-        if($date){
+    public function dateformat($date)
+    {
+        if ($date) {
             return Carbon::parse($date)->format('Y-m-d H:i:s');
         }
     }

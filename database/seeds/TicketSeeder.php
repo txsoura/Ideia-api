@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class AddressSeeder extends Seeder
+class TicketSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,6 +11,6 @@ class AddressSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\Address::class, 1)->create();
+        factory(App\Models\Ticket::class, 1)->create();
     }
 }

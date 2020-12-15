@@ -18,14 +18,16 @@ class TagResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'event' => new EventResource($this->whenLoaded('event')),
+            'events' => EventResource::collection($this->whenLoaded('events')),
             'created_at' => $this->dateformat($this->created_at),
             'updated_at' => $this->dateformat($this->updated_at),
+            'deleted_at' => $this->dateformat($this->deleted_at),
         ];
     }
 
-    public function dateformat ($date){
-        if($date){
+    public function dateformat($date)
+    {
+        if ($date) {
             return Carbon::parse($date)->format('Y-m-d H:i:s');
         }
     }

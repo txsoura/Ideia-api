@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class StateSeeder extends Seeder
+class EventSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,6 +11,6 @@ class StateSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Models\State::class, 1)->create();
+        factory(App\Models\Event::class, 2)->create();
     }
 }

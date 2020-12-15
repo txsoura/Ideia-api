@@ -2,13 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject, MustVerifyEmail
+class User extends Authenticatable
 {
     use Notifiable, SoftDeletes;
 
@@ -20,9 +18,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      *
      * @var array
      */
-    protected $fillable = [
-         'email', 'password', 'status', 'role'
-    ];
+    protected $fillable = [];
 
     protected $dates = ['created_at', 'deleted_at'];
 
@@ -34,56 +30,4 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     protected $hidden = [
         'password', 'remember_token'
     ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime'
-    ];
-
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [
-            "role" => $this->role,
-            "status" => $this->status
-        ];
-    }
-
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
-
-    public function wallet()
-    {
-        return $this->hasOne(Wallet::class);
-    }
-
-    public function address()
-    {
-        return $this->hasOne(Address::class);
-    }
-
-    public function events()
-    {
-        return $this->hasMany(Event::class);
-    }
 }

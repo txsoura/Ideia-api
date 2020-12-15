@@ -2,11 +2,10 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Enums\UserRole;
-use App\Enums\UserStatus;
-use App\Models\User;
+use App\Enums\TicketStatus;
+use App\Models\Event;
+use App\Models\Ticket;
 use Faker\Generator as Faker;
-use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,12 +18,13 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(User::class, function (Faker $faker) {
+$factory->define(Ticket::class, function (Faker $faker) {
     return [
-        'email' => $faker->unique()->safeEmail,
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'remember_token' => Str::random(10),
-        'status' => new UserStatus($faker->randomElement(UserStatus::toArray())),
-        'role' => new UserRole($faker->randomElement(UserRole::toArray()))
+        'status' => new TicketStatus($faker->randomElement(TicketStatus::toArray())),
+        'price' => $faker->randomFloat($nbMaxDecimals = 2, $min = 0, $max = 33),
+        'event_id' => function () {
+            return factory(Event::class)->create()->id;
+        },
+        'customer_id' => $faker->randomFloat($nbMaxDecimals = 0, $min = 0, $max = 10)
     ];
 });
