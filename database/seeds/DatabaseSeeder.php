@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\App;
 
 class DatabaseSeeder extends Seeder
 {
@@ -11,6 +12,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(UserSeeder::class);
+        if (App::environment('local', 'staging')) {
+            $this->call([
+                TagSeeder::class,
+                EventSeeder::class,
+                TicketSeeder::class
+            ]);
+        }
     }
 }
