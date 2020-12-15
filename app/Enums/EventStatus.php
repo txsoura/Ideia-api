@@ -11,7 +11,8 @@ final class EventStatus extends Enum
 {
     const AVAILABLE =  'available';
     const PENDENT =   'pendent';
-    const WITHOUT_TICKET = 'without_ticket';
-    const OUT_TICKET = 'out_ticket';
-    const OUT = 'out';
+    const TICKET_OUT = 'ticket_out'; //no ticket available
+    const OUT = 'out'; //event not visible
+    const CANCELED = 'canceled'; //canceled event
+    const BLOCKED = 'blocked'; //event blocked by a report human for any reason
 }
