@@ -17,20 +17,20 @@ class TicketResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'price' => $this->price,
             'status' => $this->status,
-            'user_id' => $this->user_id,
+            'price' => $this->price,
             'event_id' => $this->event_id,
-            'user' =>  new UserResource($this->whenLoaded('user')),
             'event' => new EventResource($this->whenLoaded('event')),
+            'customer_id' => $this->customer_id,
             'created_at' => $this->dateformat($this->created_at),
             'updated_at' => $this->dateformat($this->updated_at),
             'deleted_at' => $this->dateformat($this->deleted_at)
         ];
     }
 
-    public function dateformat ($date){
-        if($date){
+    public function dateformat($date)
+    {
+        if ($date) {
             return Carbon::parse($date)->format('Y-m-d H:i:s');
         }
     }
