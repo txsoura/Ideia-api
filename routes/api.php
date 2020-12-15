@@ -27,9 +27,19 @@ Route::fallback(function () {
     return response()->json(['message' => 'Page Not Found'], 404);
 });
 
-Route::group(['prefix' => 'v1', 'middleware' => ['api', 'jwt.auth']], function () {
-    // User
-    Route::apiResource('users', 'UserController');
+// public routes
+Route::group(['prefix' => 'v1'], function () {
+    Route::apiResource('events', 'EventController');
+});
 
-
+//private routes
+Route::group(['prefix' => 'v1', 'middleware' => ['jwt.auth']], function () {
+    Route::apiResource('events', 'EventController', [
+        'except' => [
+            'index',
+            'show'
+        ]
+    ])->middleware('jwt.auth');
+    Route::apiResource('tickets', 'TicketController');
+    Route::apiResource('tags', 'TagController');
 });
